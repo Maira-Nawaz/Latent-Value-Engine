@@ -53,6 +53,8 @@ Wait (5s)          → Pauses to respect API rate limits
 Back to Loop       → Repeats for every clinic
 ```
 
+![Pipeline Diagram](https://raw.githubusercontent.com/Maira-Nawaz/Latent-Value-Engine/main/pipeline-diagram.jpeg)
+
 ---
 
 ## Tech Stack
