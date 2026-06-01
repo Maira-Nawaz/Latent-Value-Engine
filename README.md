@@ -1,10 +1,10 @@
-# 🦷 Latent Value Engine — Automated B2B Lead Generation & Outreach Pipeline
+# Latent Value Engine — Automated B2B Lead Generation & Outreach Pipeline
 
 > Built with n8n · Serper.dev · Groq (Llama 3.3) · Google Sheets
 
 ---
 
-## 📌 What is This Project?
+## What is This Project?
 
 The **Latent Value Engine** is a fully automated B2B sales pipeline that discovers dental clinics with no chatbot capabilities and generates personalised WhatsApp outreach messages for each one — ready to send in a single click.
 
@@ -12,7 +12,7 @@ It was originally designed to target dental clinics in Islamabad, Pakistan, but 
 
 ---
 
-## 🧠 The Core Idea
+## The Core Idea
 
 Many dental clinics have websites with static appointment forms. Patients visit at night, can't get answers, and leave without booking. That lost revenue is **latent value** — hidden money the clinic doesn't even know it's losing.
 
@@ -25,7 +25,7 @@ This pipeline:
 
 ---
 
-## 🏗️ Pipeline Architecture
+## Pipeline Architecture
 
 ```
 Trigger
@@ -55,18 +55,18 @@ Back to Loop       → Repeats for every clinic
 
 ---
 
-## 🔧 Tech Stack
+## Tech Stack
 
 | Tool | Role | Cost |
 |---|---|---|
 | [n8n](https://n8n.io) | Workflow automation engine | Free tier available |
 | [Serper.dev](https://serper.dev) | Google Maps search API | 2,500 free searches |
 | [Groq Console](https://console.groq.com) | AI inference (Llama 3.3-70b) | Free tier available |
-| Google Sheets | CRM / lead storage | Free |
+| [Google Sheets](https://docs.google.com/spreadsheets/d/1NHmzMRwTw3Pl1VSjhh64LdmrySNznO8X1NxygOaVdVE/edit?gid=0#gid=0) | CRM / lead storage | Free |
 
 ---
 
-## ⚙️ Node Configuration
+## Node Configuration
 
 ### Node 1: Manual Trigger
 Starts the workflow when you click Execute.
@@ -138,9 +138,9 @@ Source Data:   JSON
 JSON Property: data
 
 Extraction Values:
-  Clinic_Name → CSS: title          → Return: Text
-  Phone       → CSS: a[href*="tel:"] → Return: Text
-  Form_type   → CSS: form            → Return: Attribute (action)
+  Clinic_Name → CSS: title               → Return: Text
+  Phone       → CSS: a[href*="tel:"]     → Return: Text
+  Form_type   → CSS: form                → Return: Attribute (action)
   Whatsapp    → CSS: a[href*="whatsapp"] → Return: Attribute (href)
 ```
 
@@ -183,6 +183,9 @@ to fix. Use British English spelling.
 ---
 
 ### Node 10: Add to CRM (Google Sheets)
+
+CRM Sheet: [Dental Leads CRM](https://docs.google.com/spreadsheets/d/1NHmzMRwTw3Pl1VSjhh64LdmrySNznO8X1NxygOaVdVE/edit?gid=0#gid=0)
+
 ```
 Operation:            Append or Update Row
 Mapping Column Mode:  Map Each Column Manually
@@ -214,7 +217,7 @@ Connect the output of this node back to **Loop Over Items** to complete the loop
 
 ---
 
-## 🚀 Setup Guide
+## Setup Guide
 
 ### Step 1: Prerequisites
 Create accounts and get API keys for:
@@ -238,12 +241,22 @@ Follow the node configurations above in order. Connect each node left to right, 
 - **Groq:** Create a Groq credential in the AI Agent node using your API key
 - **Google Sheets:** Authenticate with your Google account in the Add to CRM node
 
-### Step 5: Run It
+### Step 5: Quick Import
+Rather than building from scratch, you can import the workflow directly:
+1. Download `workflow.json` from this repo
+2. Open n8n
+3. Click the three dots menu top right
+4. Click **Import**
+5. Select the downloaded `workflow.json`
+6. Add your own API keys for Serper, Groq and Google Sheets
+7. Click Execute Workflow
+
+### Step 6: Run It
 Click **Execute Workflow** and watch your Google Sheet populate automatically with qualified leads and personalised pitches.
 
 ---
 
-## 📊 Expected Output
+## Expected Output
 
 After running the workflow you will have a Google Sheet with rows like this:
 
@@ -255,7 +268,7 @@ Each row has a **WhatsApp Send Link** — click it, review the message, and hit 
 
 ---
 
-## 🔑 Business Terms Glossary
+## Business Terms Glossary
 
 | Term | Meaning |
 |---|---|
@@ -272,7 +285,7 @@ Each row has a **WhatsApp Send Link** — click it, review the message, and hit 
 
 ---
 
-## 🔄 Adapting This for Other Niches
+## Adapting This for Other Niches
 
 This pipeline is fully reusable. To target a different industry or city:
 
@@ -286,33 +299,3 @@ This pipeline is fully reusable. To target a different industry or city:
 3. Update the AI Agent prompt to match your new product and value proposition
 
 That's it. Everything else stays the same.
-
----
-
-## 📁 Project Structure
-
-```
-latent-value-engine/
-│
-├── README.md                  ← You are here
-├── workflow.json              ← Export your n8n workflow and add it here
-└── assets/
-    └── pipeline-diagram.png   ← Screenshot of your n8n canvas
-```
-
-To export your workflow from n8n:
-- Click the **three dots** menu in the top right
-- Click **Export**
-- Save the JSON file and add it to this repo as `workflow.json`
-
----
-
-## 👤 Author
-
-Built following the guide by **Sehar Mangi** — adapted and implemented as a hands-on learning project.
-
----
-
-## 📄 Licence
-
-MIT — free to use, adapt, and build on.
