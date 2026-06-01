@@ -2,6 +2,8 @@
 
 > Built with n8n · Serper.dev · Groq (Llama 3.3) · Google Sheets
 
+![Pipeline Diagram](https://raw.githubusercontent.com/Maira-Nawaz/Latent-Value-Engine/main/pipeline-diagram.jpeg)
+
 ---
 
 ## What is This Project?
@@ -52,8 +54,6 @@ Wait (5s)          → Pauses to respect API rate limits
    ↓
 Back to Loop       → Repeats for every clinic
 ```
-
-![Pipeline Diagram](https://raw.githubusercontent.com/Maira-Nawaz/Latent-Value-Engine/main/pipeline-diagram.jpeg)
 
 ---
 
