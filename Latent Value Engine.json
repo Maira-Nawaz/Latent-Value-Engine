@@ -1,0 +1,568 @@
+{
+  "name": "Latent Value Engine",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        -272
+      ],
+      "id": "acf9ef48-88b5-48a2-870f-94e043238bbc",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://google.serper.dev/maps",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "72f6da19e7e840dc4c4edd643ea2afc32a49fb3f"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"q\": \"Dental Clinics in Islamabad\",\n  \"limit\": 20\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -816,
+        -272
+      ],
+      "id": "8ec0ce2e-e215-43ff-83de-63307654f807",
+      "name": "The Scout"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all()[0].json.places.map(place => ({ json: place }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        -272
+      ],
+      "id": "e34a5ff3-2983-473d-b0ae-440f18f9a5f2",
+      "name": "Data Unroller"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.website }}",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -192,
+        -272
+      ],
+      "id": "ebafc067-de20-434c-9e86-8bfc49b464a5",
+      "name": "Website Deep Scan"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a0aa7922-d9a6-414a-846c-8fd2a18fb8f5",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "intercom",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "b74b977d-c4a3-4a7a-9406-a63a792c3623",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "drift.com",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "1bc73290-5859-444e-82f9-5b4103c50494",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "zendesk",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "1d1973d4-40dd-46a3-98cd-467434e9197d",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "tidio",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "d022822a-4316-458d-88ec-3d713af18daa",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "shifa",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "d0180b68-47e8-403f-9c66-34f504cedef8",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "pims.gop",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        16,
+        -272
+      ],
+      "id": "beb9060c-b06f-48e1-8ecc-98f7bd2e31bd",
+      "name": "Chatbot Detector"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Clinic_Name",
+              "cssSelector": "title"
+            },
+            {
+              "key": "Phone",
+              "cssSelector": "a[href*=\"tel:\"]"
+            },
+            {
+              "key": "Form_type",
+              "cssSelector": "form",
+              "returnValue": "attribute",
+              "attribute": "action"
+            },
+            {
+              "key": "Whatsapp",
+              "cssSelector": "a[href*=\"whatsapp\"]",
+              "returnValue": "attribute",
+              "attribute": "href"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        -272
+      ],
+      "id": "bf13ede6-6974-416f-ac5d-9ad3210b8b07",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        432,
+        -272
+      ],
+      "id": "6a1bfdf2-24ae-4a13-9ff5-1fe552e736a5",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a short, punchy outreach message for {{ $json.Clinic_Name }}.\n\nCONTEXT: I noticed they have a manual appointment form at {{ $json.Form_type }} and a contact number of {{ $json.Phone }}.\n\nRULES:\n- No formal greetings like \"Dear Sir/Madam\". Use \"Hi [Clinic Name] team,\" or just \"Hi,\"\n- Mention their booking form is static and doesn't answer patient questions after hours\n- Briefly mention a \"Digital Front Desk\" that handles WhatsApp questions and books appointments\n- End with \"Is this something you've looked into before?\" or \"Open to a quick 2-minute demo?\"\n- Do not use the same phrasing for every lead\n- Sometimes call it \"AI Receptionist\", other times \"Smart Booking Assistant\" or \"24/7 Dental Concierge\"\n- Max 60 words. No emojis.",
+        "options": {
+          "systemMessage": "You are a local business growth specialist in Islamabad. Your tone is professional, helpful, and direct. You hate corporate jargon. You speak like a person who just visited their website and noticed a small leak in their business that you know how to fix. Use British English spelling."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        688,
+        -256
+      ],
+      "id": "f677514b-5845-4f7d-93d4-f7bc7f0d4b9e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        688,
+        48
+      ],
+      "id": "b9390c11-3837-4316-af40-6636c21d6362",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "S2hQAK4Pt1KBc1Ys",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1NHmzMRwTw3Pl1VSjhh64LdmrySNznO8X1NxygOaVdVE",
+          "mode": "list",
+          "cachedResultName": "Dental Leads CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NHmzMRwTw3Pl1VSjhh64LdmrySNznO8X1NxygOaVdVE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NHmzMRwTw3Pl1VSjhh64LdmrySNznO8X1NxygOaVdVE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Clinic Name": "={{ $('Loop Over Items').item.json.Clinic_Name }}",
+            "Website URL": "={{ $('Qualified Lead Filter').item.json.website }}",
+            "Phone Number": "={{ $('Loop Over Items').item.json.Phone }}",
+            "Form Action": "={{ $('Loop Over Items').item.json.Form_type }}",
+            "WhatsApp Link": "={{ $('HTML').item.json.Whatsapp }}",
+            "Sales Pitch": "={{ $json.output }}",
+            "WhatsApp Send Link": "=https://wa.me/{{ $('Loop Over Items').item.json.Phone }}?text={{ encodeURIComponent($json.output) }}"
+          },
+          "matchingColumns": [
+            "Clinic Name"
+          ],
+          "schema": [
+            {
+              "id": "Clinic Name",
+              "displayName": "Clinic Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Website URL",
+              "displayName": "Website URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Form Action",
+              "displayName": "Form Action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "WhatsApp Link",
+              "displayName": "WhatsApp Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sales Pitch",
+              "displayName": "Sales Pitch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "WhatsApp Send Link",
+              "displayName": "WhatsApp Send Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        -256
+      ],
+      "id": "438aabd5-4c67-4a36-8b3f-1d5e6712c2db",
+      "name": "Add to CRM",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "D3AhUuj4Z42EYTFh",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "78f0e8e1-e34c-47ea-9354-c6e73616e457",
+              "leftValue": "={{ $json.ratingCount }}",
+              "rightValue": 50,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "7b045c65-e9d5-4944-9ce5-1bfda957672a",
+              "leftValue": "={{ $json.website }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -400,
+        -272
+      ],
+      "id": "3373c34e-1b39-4b16-a9d7-377e2bc92512",
+      "name": "Qualified Lead Filter"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1248,
+        -256
+      ],
+      "id": "5a18d820-a4bf-4cfd-8a61-9f82bb302803",
+      "name": "Wait",
+      "webhookId": "94225f98-5177-4ca6-b11c-1afea9bda86e"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "The Scout",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "The Scout": {
+      "main": [
+        [
+          {
+            "node": "Data Unroller",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Unroller": {
+      "main": [
+        [
+          {
+            "node": "Qualified Lead Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Website Deep Scan": {
+      "main": [
+        [
+          {
+            "node": "Chatbot Detector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chatbot Detector": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Add to CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualified Lead Filter": {
+      "main": [
+        [
+          {
+            "node": "Website Deep Scan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to CRM": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5e9ea5f6-86ad-4ab1-8196-3646d04ea4f9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bbce9b3f2a2fe6b223f4d12c28943bbfb99f177ecceaec002c832e812f0bb362"
+  },
+  "id": "QhUDi8Zxc0g8HUXY",
+  "tags": []
+}
